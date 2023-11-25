@@ -34,7 +34,7 @@ export async function approvePendingIndividual(
     if (!name || 'string' !== typeof name || 64 < name.length) {
         throw new BadRequestException('name');
     }
-    if (!phone || 'string' !== typeof phone || 11 !== name.length) {
+    if (!phone || 'string' !== typeof phone || 11 !== phone.length) {
         throw new BadRequestException('phone');
     }
     if (
