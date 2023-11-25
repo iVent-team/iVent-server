@@ -17,7 +17,12 @@ const app: Express = express();
 
 app.disable('x-powered-by');
 
-app.use(cors({ origin: '*' }));
+app.use(
+    cors({
+        origin: '*',
+        credentials: true,
+    }),
+);
 
 app.use(bodyParser.urlencoded({ extended: true }) as RequestHandler);
 app.use(bodyParser.json({ limit: 1024 * 1024 * 30 }) as RequestHandler);
