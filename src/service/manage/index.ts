@@ -12,7 +12,7 @@ router.get(
     validateAccessToken,
     validateManager,
     async function (req: Request, res: Response, next: Function) {
-        res.status(200).custom.send({ status: 'ok' });
+        res.custom.send(200, { status: 'ok' });
         return next();
     },
 );
