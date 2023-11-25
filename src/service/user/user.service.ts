@@ -48,7 +48,7 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
             website,
             null,
             studentNumber,
-            false,
+            true,
             false,
         );
 
@@ -87,7 +87,7 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
             website,
             name,
             null,
-            true,
+            false,
             isOfficial,
         );
 
