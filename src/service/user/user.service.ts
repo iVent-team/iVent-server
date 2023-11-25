@@ -25,7 +25,7 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
 
     if (isIndividual) {
         const { website, studentNumber } = req.body;
-        if ('string' === typeof website) {
+        if ('string' !== typeof website) {
             throw new BadRequestException('website');
         }
         if (!studentNumber || 16 < studentNumber.length) {
@@ -65,13 +65,13 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
         if (!phone || 11 !== phone.length) {
             throw new BadRequestException('phone');
         }
-        if ('string' === typeof website) {
+        if ('string' !== typeof website) {
             throw new BadRequestException('website');
         }
         if (!name || 64 < name.length) {
             throw new BadRequestException('name');
         }
-        if ('boolean' === typeof isOfficial) {
+        if ('boolean' !== typeof isOfficial) {
             throw new BadRequestException('name');
         }
 
