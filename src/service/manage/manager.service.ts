@@ -50,7 +50,7 @@ export async function approvePendingIndividual(
     if (!major || 'string' !== typeof major || 64 < major.length) {
         throw new BadRequestException('major');
     }
-    if ('boolean' !== academicStatus) {
+    if ('boolean' !== typeof academicStatus) {
         throw new BadRequestException('academicStatus');
     }
 
