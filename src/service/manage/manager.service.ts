@@ -2,6 +2,7 @@ import { Request, Response } from '../../infra/middleware/express';
 import { iventRepository, userRepository } from '../../domain';
 import { BadRequestException } from '../../infra/middleware/handler/exception';
 import { GENDER_ENUM } from '../../domain/user/user.entity';
+import Aligo from '../../infra/module/aligo';
 
 export async function getPendingIndividual(
     _req: Request,
@@ -69,6 +70,13 @@ export async function approvePendingIndividual(
 
     await userRepository.save(pendingUser);
 
+    if (pendingUser.phone) {
+        await Aligo.sendMessage(
+            pendingUser.phone,
+            `[iVent]\n${pendingUser.name}님의 계정 검토가 완료되었습니다`,
+        );
+    }
+
     return;
 }
 
@@ -108,6 +116,13 @@ export async function approvePendingOrganization(
 
     await userRepository.save(pendingUser);
 
+    if (pendingUser.phone) {
+        await Aligo.sendMessage(
+            pendingUser.phone,
+            `[iVent]\n${pendingUser.name}님의 계정 검토가 완료되었습니다`,
+        );
+    }
+
     return;
 }
 
@@ -122,13 +137,20 @@ export async function deleteUser(
         throw new BadRequestException('id');
     }
 
-    const pendingUser = await userRepository.findOneById(id);
+    const user = await userRepository.findOneById(id);
 
-    if (!pendingUser) {
+    if (!user) {
         throw new BadRequestException('invalid user');
     }
 
-    await userRepository.deleteById(pendingUser.id);
+    if (user.phone) {
+        await Aligo.sendMessage(
+            user.phone,
+            '[iVent]\n계정이 관리자에 의해 삭제되었습니다',
+        );
+    }
+
+    await userRepository.deleteById(user.id);
 
     return;
 }
@@ -169,6 +191,16 @@ export async function approvePendingIvent(
 
     await iventRepository.save(pendingIvent);
 
+    const host = await userRepository.findOneById(pendingIvent.hostId);
+
+    if (host && host.phone) {
+        await Aligo.sendMessage(
+            host.phone,
+            '[iVent]\n' +
+                `${host.name}님이 등록하신 ${pendingIvent.title}의 등록 검토가 완료되었습니다`,
+        );
+    }
+
     return;
 }
 
@@ -187,6 +219,15 @@ export async function deleteIvent(
 
     if (!ivent) {
         throw new BadRequestException('invalid user');
+    }
+
+    const host = await userRepository.findOneById(ivent.hostId);
+
+    if (host && host.phone) {
+        await Aligo.sendMessage(
+            host.phone,
+            `[iVent]\n${host.name}님이 등록하신 ${ivent.title}이(가) 관리자에 의해 삭제되었습니다`,
+        );
     }
 
     await iventRepository.softDeleteById(ivent.id);
