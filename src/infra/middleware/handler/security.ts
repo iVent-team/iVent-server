@@ -17,16 +17,31 @@ const validateAccessToken = async (
             accessToken,
         );
         if (id instanceof Error) {
-            return res.custom.send(401, {});
+            return res.custom.send(401, undefined);
         }
 
         const user = await userRepository.findOneById(id);
         if (!user) {
-            return res.custom.send(401, {});
+            return res.custom.send(401, undefined);
         }
         req.custom.user = user;
     } catch (e) {
-        return res.custom.send(500, {});
+        return res.custom.send(500, undefined);
+    }
+    next();
+};
+
+const validateActivated = async (
+    req: Request,
+    res: Response,
+    next: Function,
+) => {
+    try {
+        if (!req.custom.user.isActivated) {
+            return res.custom.send(401, undefined);
+        }
+    } catch (e) {
+        return res.custom.send(500, undefined);
     }
     next();
 };
@@ -38,10 +53,10 @@ const validateIndividual = async (
 ) => {
     try {
         if (!req.custom.user.isIndividual) {
-            return res.custom.send(401, {});
+            return res.custom.send(401, undefined);
         }
     } catch (e) {
-        return res.custom.send(500, {});
+        return res.custom.send(500, undefined);
     }
     next();
 };
@@ -49,12 +64,17 @@ const validateIndividual = async (
 const validateManager = async (req: Request, res: Response, next: Function) => {
     try {
         if (!req.custom.user.isManager) {
-            return res.custom.send(401, {});
+            return res.custom.send(401, undefined);
         }
     } catch (e) {
-        return res.custom.send(500, {});
+        return res.custom.send(500, undefined);
     }
     next();
 };
 
-export { validateAccessToken, validateIndividual, validateManager };
+export {
+    validateAccessToken,
+    validateActivated,
+    validateIndividual,
+    validateManager,
+};

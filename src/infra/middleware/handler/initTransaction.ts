@@ -10,7 +10,7 @@ const initTransactionMiddleware = async (
         logger: new TransactionLogger(logger, 'HTTP'),
     };
     res.custom = {
-        send: (s: number, c: {}) => {
+        send: (s: number, c?: {}) => {
             if (!res.destroyed && undefined === res.custom.responseJson) {
                 try {
                     res.custom.responseJson = c;

@@ -60,28 +60,28 @@ const userRepository = database.source.getRepository(UserEntity).extend({
     async findPendingIndividual(transactionManager?: EntityManager) {
         if (transactionManager)
             return await transactionManager.findBy<UserEntity>(UserEntity, {
-                isActivate: false,
+                isActivated: false,
                 isIndividual: true,
             });
         else
             return await database.source
                 .getRepository<UserEntity>(UserEntity)
                 .findBy({
-                    isActivate: false,
+                    isActivated: false,
                     isIndividual: true,
                 });
     },
     async findPendingOrganization(transactionManager?: EntityManager) {
         if (transactionManager)
             return await transactionManager.findBy<UserEntity>(UserEntity, {
-                isActivate: false,
+                isActivated: false,
                 isIndividual: false,
             });
         else
             return await database.source
                 .getRepository<UserEntity>(UserEntity)
                 .findBy({
-                    isActivate: false,
+                    isActivated: false,
                     isIndividual: false,
                 });
     },

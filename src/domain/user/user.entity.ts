@@ -147,13 +147,13 @@ export default class UserEntity {
 
     @Column({
         type: 'boolean',
-        name: 'is_activate',
+        name: 'is_activated',
         default: false,
         nullable: false,
         unique: false,
-        comment: 'flag if user is activate or not',
+        comment: 'flag if user is activated or not',
     })
-    public isActivate: boolean;
+    public isActivated: boolean;
 
     @Column({
         type: 'boolean',
@@ -233,5 +233,25 @@ export default class UserEntity {
         this.studentNumber = studentNumber;
         this.isIndividual = isIndividual;
         this.isOfficial = isOfficial;
+    }
+
+    public async getJsonResponse() {
+        return {
+            id: this.id,
+            username: this.username,
+            name: this.name,
+            phone: this.phone,
+            website: this.website,
+            gender: this.gender,
+            college: this.college,
+            major: this.major,
+            academicStatus: this.academicStatus,
+            studentNumber: this.studentNumber,
+            image: this.image,
+            isActivated: this.isActivated,
+            isIndividual: this.isIndividual,
+            isOfficial: this.isOfficial,
+            isManager: this.isManager,
+        };
     }
 }

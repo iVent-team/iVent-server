@@ -5,6 +5,7 @@ import path from 'path';
 import { ulid } from 'ulid';
 import { requestWrapper } from '../../infra/middleware/handler/requestWrapper';
 import * as UserService from './user.service';
+import { validateActivated } from '../../infra/middleware/handler/security';
 
 const router = express.Router();
 
@@ -19,6 +20,13 @@ router.delete('/sign', requestWrapper(UserService.signOut));
 router.get('/', validateAccessToken, requestWrapper(UserService.getMyInfo));
 
 router.delete('/', validateAccessToken, requestWrapper(UserService.withdraw));
+
+router.get(
+    '/detail/:id',
+    validateAccessToken,
+    validateActivated,
+    requestWrapper(UserService.getDetail),
+);
 
 router.put(
     '/image',

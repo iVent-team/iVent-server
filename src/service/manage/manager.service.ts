@@ -1,5 +1,5 @@
 import { Request, Response } from '../../infra/middleware/express';
-import { userRepository } from '../../domain';
+import { iventRepository, userRepository } from '../../domain';
 import { BadRequestException } from '../../infra/middleware/handler/exception';
 import { GENDER_ENUM } from '../../domain/user/user.entity';
 
@@ -10,27 +10,13 @@ export async function getPendingIndividual(
 ) {
     const pendingUserList = await userRepository.findPendingIndividual();
 
-    return pendingUserList.map(user => {
-        return {
-            user: {
-                id: user.id,
-                username: user.username,
-                name: user.name,
-                phone: user.phone,
-                website: user.website,
-                gender: user.gender,
-                college: user.college,
-                major: user.major,
-                academicStatus: user.academicStatus,
-                studentNumber: user.studentNumber,
-                image: user.image,
-                isActivate: user.isActivate,
-                isIndividual: user.isIndividual,
-                isOfficial: user.isOfficial,
-                isManager: user.isManager,
-            },
-        };
-    });
+    return {
+        users: await Promise.all(
+            pendingUserList.map(async user => {
+                return await user.getJsonResponse();
+            }),
+        ),
+    };
 }
 
 export async function approvePendingIndividual(
@@ -69,7 +55,7 @@ export async function approvePendingIndividual(
 
     const pendingUser = await userRepository.findOneById(id);
 
-    if (!pendingUser || !pendingUser.isIndividual || pendingUser.isActivate) {
+    if (!pendingUser || !pendingUser.isIndividual || pendingUser.isActivated) {
         throw new BadRequestException('invalid user');
     }
     pendingUser.name = name;
@@ -79,7 +65,7 @@ export async function approvePendingIndividual(
     pendingUser.college = college;
     pendingUser.major = major;
     pendingUser.academicStatus = academicStatus;
-    pendingUser.isActivate = true;
+    pendingUser.isActivated = true;
 
     await userRepository.save(pendingUser);
 
@@ -93,27 +79,13 @@ export async function getPendingOrganization(
 ) {
     const pendingUserList = await userRepository.findPendingOrganization();
 
-    return pendingUserList.map(user => {
-        return {
-            user: {
-                id: user.id,
-                username: user.username,
-                name: user.name,
-                phone: user.phone,
-                website: user.website,
-                gender: user.gender,
-                college: user.college,
-                major: user.major,
-                academicStatus: user.academicStatus,
-                studentNumber: user.studentNumber,
-                image: user.image,
-                isActivate: user.isActivate,
-                isIndividual: user.isIndividual,
-                isOfficial: user.isOfficial,
-                isManager: user.isManager,
-            },
-        };
-    });
+    return {
+        users: await Promise.all(
+            pendingUserList.map(async user => {
+                return await user.getJsonResponse();
+            }),
+        ),
+    };
 }
 
 export async function approvePendingOrganization(
@@ -129,17 +101,17 @@ export async function approvePendingOrganization(
 
     const pendingUser = await userRepository.findOneById(id);
 
-    if (!pendingUser || pendingUser.isIndividual || pendingUser.isActivate) {
+    if (!pendingUser || pendingUser.isIndividual || pendingUser.isActivated) {
         throw new BadRequestException('invalid user');
     }
-    pendingUser.isActivate = true;
+    pendingUser.isActivated = true;
 
     await userRepository.save(pendingUser);
 
     return;
 }
 
-export async function deletePendingUser(
+export async function deleteUser(
     req: Request,
     _res: Response,
     _next: Function,
@@ -152,11 +124,72 @@ export async function deletePendingUser(
 
     const pendingUser = await userRepository.findOneById(id);
 
-    if (!pendingUser || pendingUser.isActivate) {
+    if (!pendingUser) {
         throw new BadRequestException('invalid user');
     }
 
     await userRepository.deleteById(pendingUser.id);
+
+    return;
+}
+
+export async function getPendingIvent(
+    _req: Request,
+    _res: Response,
+    _next: Function,
+) {
+    const pendingIventList = await iventRepository.findPending();
+
+    return {
+        ivents: await Promise.all(
+            pendingIventList.map(async ivent => {
+                return await ivent.getJsonResponse();
+            }),
+        ),
+    };
+}
+
+export async function approvePendingIvent(
+    req: Request,
+    _res: Response,
+    _next: Function,
+) {
+    const { id } = req.body;
+
+    if (!id || isNaN(id)) {
+        throw new BadRequestException('id');
+    }
+
+    const pendingIvent = await iventRepository.findOneById(id);
+
+    if (!pendingIvent || pendingIvent.isReviewed) {
+        throw new BadRequestException('invalid user');
+    }
+    pendingIvent.isReviewed = true;
+
+    await iventRepository.save(pendingIvent);
+
+    return;
+}
+
+export async function deleteIvent(
+    req: Request,
+    _res: Response,
+    _next: Function,
+) {
+    const { id } = req.body;
+
+    if (!id || isNaN(id)) {
+        throw new BadRequestException('id');
+    }
+
+    const ivent = await iventRepository.findOneById(id);
+
+    if (!ivent) {
+        throw new BadRequestException('invalid user');
+    }
+
+    await iventRepository.softDeleteById(ivent.id);
 
     return;
 }

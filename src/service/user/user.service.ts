@@ -170,23 +170,7 @@ export async function signOut(req: Request, _res: Response, _next: Function) {
 
 export async function getMyInfo(req: Request, _res: Response, _next: Function) {
     return {
-        user: {
-            id: req.custom.user.id,
-            username: req.custom.user.username,
-            name: req.custom.user.name,
-            phone: req.custom.user.phone,
-            website: req.custom.user.website,
-            gender: req.custom.user.gender,
-            college: req.custom.user.college,
-            major: req.custom.user.major,
-            academicStatus: req.custom.user.academicStatus,
-            studentNumber: req.custom.user.studentNumber,
-            image: req.custom.user.image,
-            isActivate: req.custom.user.isActivate,
-            isIndividual: req.custom.user.isIndividual,
-            isOfficial: req.custom.user.isOfficial,
-            isManager: req.custom.user.isManager,
-        },
+        user: await req.custom.user.getJsonResponse(),
     };
 }
 
@@ -198,6 +182,20 @@ export async function withdraw(req: Request, _res: Response, _next: Function) {
     await userRepository.deleteById(req.custom.user.id);
 
     return;
+}
+
+export async function getDetail(req: Request, _res: Response, _next: Function) {
+    const { id } = req.params;
+
+    const user = await userRepository.findOneById(id);
+
+    if (!user) {
+        throw new NotFoundException('cannot find user');
+    }
+
+    return {
+        user: await user.getJsonResponse(),
+    };
 }
 
 export async function updateImage(
