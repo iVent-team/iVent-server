@@ -28,7 +28,11 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
         if ('string' !== typeof website) {
             throw new BadRequestException('website');
         }
-        if (!studentNumber || 16 < studentNumber.length) {
+        if (
+            !studentNumber ||
+            'string' !== typeof studentNumber ||
+            16 < studentNumber.length
+        ) {
             throw new BadRequestException('studentNumber');
         }
 
@@ -62,13 +66,13 @@ export async function signUp(req: Request, _res: Response, _next: Function) {
         };
     } else {
         const { phone, website, name, isOfficial } = req.body;
-        if (!phone || 11 !== phone.length) {
+        if (!phone || 'string' !== typeof phone || 11 !== phone.length) {
             throw new BadRequestException('phone');
         }
         if ('string' !== typeof website) {
             throw new BadRequestException('website');
         }
-        if (!name || 64 < name.length) {
+        if (!name || 'string' !== typeof name || 64 < name.length) {
             throw new BadRequestException('name');
         }
         if ('boolean' !== typeof isOfficial) {
@@ -166,7 +170,6 @@ export async function signOut(req: Request, _res: Response, _next: Function) {
 
 export async function getMyInfo(req: Request, _res: Response, _next: Function) {
     return {
-        status: 'ok',
         user: {
             id: req.custom.user.id,
             username: req.custom.user.username,

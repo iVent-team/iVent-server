@@ -57,6 +57,34 @@ const userRepository = database.source.getRepository(UserEntity).extend({
                 .getRepository<UserEntity>(UserEntity)
                 .findOneBy({ studentNumber });
     },
+    async findPendingIndividual(transactionManager?: EntityManager) {
+        if (transactionManager)
+            return await transactionManager.findBy<UserEntity>(UserEntity, {
+                isActivate: false,
+                isIndividual: true,
+            });
+        else
+            return await database.source
+                .getRepository<UserEntity>(UserEntity)
+                .findBy({
+                    isActivate: false,
+                    isIndividual: true,
+                });
+    },
+    async findPendingOrganization(transactionManager?: EntityManager) {
+        if (transactionManager)
+            return await transactionManager.findBy<UserEntity>(UserEntity, {
+                isActivate: false,
+                isIndividual: false,
+            });
+        else
+            return await database.source
+                .getRepository<UserEntity>(UserEntity)
+                .findBy({
+                    isActivate: false,
+                    isIndividual: false,
+                });
+    },
     async deleteById(id: number, transactionManager?: EntityManager) {
         if (transactionManager)
             return await transactionManager.delete<UserEntity>(UserEntity, {

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Moment } from 'moment';
 
-enum GENDER_ENUM {
+export enum GENDER_ENUM {
     M = 'M',
     F = 'F',
     N = 'N',
