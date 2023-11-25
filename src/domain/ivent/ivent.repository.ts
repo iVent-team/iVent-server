@@ -1,4 +1,4 @@
-import { EntityManager, Like } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import database from '../../infra/connector/database';
 import IventEntity from './ivent.entity';
 
@@ -11,12 +11,10 @@ const iventRepository = database.source.getRepository(IventEntity).extend({
                 .getRepository<IventEntity>(IventEntity)
                 .save(user);
     },
-    async getList(limit: number, offset: number, filter: string) {
+    async getList(limit: number, offset: number) {
         return await database.source
             .getRepository<IventEntity>(IventEntity)
             .createQueryBuilder()
-            .where({ title: Like('%' + filter + '%') })
-            .orWhere({ description: Like('%' + filter + '%') })
             .limit(limit)
             .offset(offset)
             .getMany();

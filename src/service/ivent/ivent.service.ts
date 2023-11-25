@@ -50,7 +50,7 @@ export async function getIventList(
     _res: Response,
     _next: Function,
 ) {
-    const { limit, offset, filter } = req.query;
+    const { limit, offset } = req.query;
 
     if (!limit || isNaN(Number(limit)) || 9 < Number(limit)) {
         throw new BadRequestException('limit');
@@ -58,14 +58,10 @@ export async function getIventList(
     if (!offset || isNaN(Number(offset)) || Number(offset) < 0) {
         throw new BadRequestException('offset');
     }
-    if (!filter || 'string' !== filter || 30 < filter.length) {
-        throw new BadRequestException('filter');
-    }
 
     const iventList = await iventRepository.getList(
         Number(limit),
         Number(offset),
-        filter,
     );
 
     return {
