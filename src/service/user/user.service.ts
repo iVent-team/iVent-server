@@ -10,37 +10,96 @@ import TokenManager from '../../infra/module/token';
 import fs from 'fs';
 
 export async function signUp(req: Request, _res: Response, _next: Function) {
-    const { username, password, studentNumber, website } = req.body;
+    const { username, password, isIndividual } = req.body;
 
-    if (await userRepository.findOneByStudentNumber(studentNumber)) {
-        throw new BadRequestException('DUPLICATED_STUDENT_NUMBER');
+    if (!username || 64 < username.length) {
+        throw new BadRequestException('username');
+    }
+    if (!password || 128 !== password.length) {
+        throw new BadRequestException('password');
     }
 
     const passwordDigester = new PasswordDigester(password);
     const [digestedPassword, salt]: string[] =
         await passwordDigester.runAndGetResult();
 
-    const user = new UserEntity(
-        username,
-        digestedPassword,
-        salt,
-        null,
-        website,
-        null,
-        studentNumber,
-        true,
-    );
+    if (isIndividual) {
+        const { website, studentNumber } = req.body;
+        if ('string' === typeof website) {
+            throw new BadRequestException('website');
+        }
+        if (!studentNumber || 16 < studentNumber.length) {
+            throw new BadRequestException('studentNumber');
+        }
 
-    await userRepository.save(user);
+        if (await userRepository.findOneByStudentNumber(studentNumber)) {
+            throw new BadRequestException('duplicated studentNumber');
+        }
 
-    const tokenObject = await new TokenManager(user.id).generateTokenObject();
+        const user = new UserEntity(
+            username,
+            digestedPassword,
+            salt,
+            null,
+            website,
+            null,
+            studentNumber,
+            false,
+            false,
+        );
 
-    return {
-        token: {
-            access: tokenObject.accessToken,
-            refresh: tokenObject.refreshToken,
-        },
-    };
+        await userRepository.save(user);
+
+        const tokenObject = await new TokenManager(
+            user.id,
+        ).generateTokenObject();
+
+        return {
+            token: {
+                access: tokenObject.accessToken,
+                refresh: tokenObject.refreshToken,
+            },
+        };
+    } else {
+        const { phone, website, name, isOfficial } = req.body;
+        if (!phone || 11 !== phone.length) {
+            throw new BadRequestException('phone');
+        }
+        if ('string' === typeof website) {
+            throw new BadRequestException('website');
+        }
+        if (!name || 64 < name.length) {
+            throw new BadRequestException('name');
+        }
+        if ('boolean' === typeof isOfficial) {
+            throw new BadRequestException('name');
+        }
+
+        const user = new UserEntity(
+            username,
+            digestedPassword,
+            salt,
+            phone,
+            website,
+            name,
+            null,
+            true,
+            isOfficial,
+        );
+
+        await userRepository.save(user);
+
+        const tokenObject = await new TokenManager(
+            user.id,
+        ).generateTokenObject();
+
+        return {
+            token: {
+                access: tokenObject.accessToken,
+                refresh: tokenObject.refreshToken,
+            },
+        };
+    }
 }
 
 export async function signIn(req: Request, _res: Response, _next: Function) {
@@ -122,6 +181,7 @@ export async function getMyInfo(req: Request, _res: Response, _next: Function) {
             image: req.custom.user.image,
             isActivate: req.custom.user.isActivate,
             isIndividual: req.custom.user.isIndividual,
+            isOfficial: req.custom.user.isOfficial,
             isManager: req.custom.user.isManager,
         },
     };

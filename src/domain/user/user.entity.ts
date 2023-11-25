@@ -133,7 +133,7 @@ export default class UserEntity {
         unique: true,
         comment: 'student number of user',
     })
-    public studentNumber: string;
+    public studentNumber: string | null;
 
     @Column({
         type: 'text',
@@ -164,6 +164,16 @@ export default class UserEntity {
         comment: 'flag if user is individual or not',
     })
     public isIndividual: boolean;
+
+    @Column({
+        type: 'boolean',
+        name: 'is_official',
+        default: false,
+        nullable: false,
+        unique: false,
+        comment: 'flag if user is official or not',
+    })
+    public isOfficial: boolean;
 
     @Column({
         type: 'boolean',
@@ -209,9 +219,10 @@ export default class UserEntity {
         salt: string,
         phone: string,
         website: string,
-        name: string,
-        studentNumber: string,
+        name: string | null,
+        studentNumber: string | null,
         isIndividual: boolean,
+        isOfficial: boolean,
     ) {
         this.username = username;
         this.password = password;
@@ -221,5 +232,6 @@ export default class UserEntity {
         this.name = name;
         this.studentNumber = studentNumber;
         this.isIndividual = isIndividual;
+        this.isOfficial = isOfficial;
     }
 }

@@ -10,7 +10,7 @@ import {
     transactionEndLoggingMiddleware,
 } from './infra/middleware/handler';
 
-import router from './controller';
+import router from './service';
 import * as path from 'path';
 
 const app: Express = express();
