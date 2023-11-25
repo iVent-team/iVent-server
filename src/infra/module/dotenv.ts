@@ -16,6 +16,8 @@ class Env {
     public readonly REDIS_HOST: string;
     public readonly REDIS_PORT: number;
 
+    public readonly PASSWORD_ITERATION: number;
+
     public readonly JWT_KEY_TTL: number;
     public readonly JWT_ISSUER: string;
     public readonly ACCESS_TTL: number;
@@ -47,6 +49,9 @@ class Env {
 
         this.REDIS_HOST = process.env.REDIS_HOST ?? '';
         this.REDIS_PORT = parseInt(String(process.env.REDIS_PORT), 10) ?? 6379;
+
+        this.PASSWORD_ITERATION =
+            parseInt(String(process.env.PASSWORD_ITERATION), 10) ?? 9;
 
         this.JWT_KEY_TTL = parseInt(String(process.env.JWT_KEY_TTL), 10) ?? 0;
         this.JWT_ISSUER = String(process.env.ACCESS_TTL);

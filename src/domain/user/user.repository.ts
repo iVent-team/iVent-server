@@ -31,25 +31,31 @@ const userRepository = database.source.getRepository(UserEntity).extend({
                 .getRepository<UserEntity>(UserEntity)
                 .findBy({ name: name });
     },
-    async findByPhone(phone: string, transactionManager?: EntityManager) {
+    async findOneByUsername(
+        username: string,
+        transactionManager?: EntityManager,
+    ) {
         if (transactionManager)
             return await transactionManager.findOneBy<UserEntity>(UserEntity, {
-                phone,
+                username,
             });
         else
             return await database.source
                 .getRepository<UserEntity>(UserEntity)
-                .findOneBy({ phone });
+                .findOneBy({ username });
     },
-    async findByEmail(email: string, transactionManager?: EntityManager) {
+    async findOneByStudentNumber(
+        studentNumber: string,
+        transactionManager?: EntityManager,
+    ) {
         if (transactionManager)
             return await transactionManager.findOneBy<UserEntity>(UserEntity, {
-                email,
+                studentNumber,
             });
         else
             return await database.source
                 .getRepository<UserEntity>(UserEntity)
-                .findOneBy({ email });
+                .findOneBy({ studentNumber });
     },
     async deleteById(id: number, transactionManager?: EntityManager) {
         if (transactionManager)

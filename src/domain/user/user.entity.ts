@@ -8,6 +8,12 @@ import {
 } from 'typeorm';
 import { Moment } from 'moment';
 
+enum GENDER_ENUM {
+    M = 'M',
+    F = 'F',
+    N = 'N',
+}
+
 @Entity({
     name: 'USER',
     orderBy: {
@@ -20,24 +26,34 @@ export default class UserEntity {
     public readonly id: number;
 
     @Column({
-        type: 'char',
-        name: 'phone',
-        length: 11,
+        type: 'varchar',
+        name: 'username',
+        length: 64,
         nullable: false,
         unique: true,
-        comment: 'phone number of user',
+        comment: 'username of user',
     })
-    public phone: string;
+    public username: string;
 
     @Column({
-        type: 'varchar',
-        name: 'email',
+        type: 'char',
+        name: 'password',
         length: 128,
-        nullable: true,
-        unique: true,
-        comment: 'email address of user',
+        nullable: false,
+        unique: false,
+        comment: 'digested password of user',
     })
-    public email: string;
+    public password: string;
+
+    @Column({
+        type: 'char',
+        name: 'salt',
+        length: 128,
+        nullable: false,
+        unique: false,
+        comment: 'salt for digest password of user',
+    })
+    public salt: string;
 
     @Column({
         type: 'varchar',
@@ -45,9 +61,79 @@ export default class UserEntity {
         length: 64,
         nullable: true,
         unique: false,
-        comment: 'name of user',
+        comment: 'name number of user',
     })
     public name: string;
+
+    @Column({
+        type: 'char',
+        name: 'phone',
+        length: 11,
+        nullable: true,
+        unique: false,
+        comment: 'phone number of user',
+    })
+    public phone: string;
+
+    @Column({
+        type: 'text',
+        name: 'website',
+        default: '',
+        nullable: false,
+        unique: false,
+        comment: 'website address of user',
+    })
+    public website: string;
+
+    @Column({
+        type: 'enum',
+        name: 'gender',
+        enum: GENDER_ENUM,
+        nullable: false,
+        unique: false,
+        default: GENDER_ENUM.N,
+        comment: 'gender of user',
+    })
+    public gender: GENDER_ENUM;
+
+    @Column({
+        type: 'varchar',
+        name: 'college',
+        length: 64,
+        nullable: true,
+        unique: false,
+        comment: 'collage information of user',
+    })
+    public college: string;
+
+    @Column({
+        type: 'varchar',
+        name: 'major',
+        length: 64,
+        nullable: true,
+        unique: false,
+        comment: 'major information of user',
+    })
+    public major: string;
+
+    @Column({
+        type: 'boolean',
+        name: 'academic_status',
+        nullable: true,
+        unique: false,
+        comment: 'academic status of user',
+    })
+    public academicStatus: boolean;
+
+    @Column({
+        type: 'varchar',
+        name: 'student_number',
+        length: 16,
+        nullable: true,
+        unique: true,
+        comment: 'student number of user',
+    })
+    public studentNumber: string;
 
     @Column({
         type: 'text',
@@ -58,6 +144,16 @@ export default class UserEntity {
         comment: 'profile image address of user',
     })
     public image: string;
+
+    @Column({
+        type: 'boolean',
+        name: 'is_activate',
+        default: false,
+        nullable: false,
+        unique: false,
+        comment: 'flag if user is activate or not',
+    })
+    public isActivate: boolean;
 
     @Column({
         type: 'boolean',
@@ -107,9 +203,23 @@ export default class UserEntity {
     })
     public readonly deletedAt: Moment | null;
 
-    constructor(phone: string, email: string, name: string) {
+    constructor(
+        username: string,
+        password: string,
+        salt: string,
+        phone: string,
+        website: string,
+        name: string,
+        studentNumber: string,
+        isIndividual: boolean,
+    ) {
+        this.username = username;
+        this.password = password;
+        this.salt = salt;
         this.phone = phone;
-        this.email = email;
+        this.website = website;
         this.name = name;
+        this.studentNumber = studentNumber;
+        this.isIndividual = isIndividual;
     }
 }
