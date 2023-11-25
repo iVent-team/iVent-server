@@ -45,7 +45,7 @@ router.get(
     requestWrapper(IventService.getPendingAttendees),
 );
 
-router.put(
+router.post(
     '/pending/:id/:attendanceId',
     validateAccessToken,
     validateActivated,

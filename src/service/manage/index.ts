@@ -16,7 +16,7 @@ router.get(
 );
 
 router.post(
-    '/user/individual/pending',
+    '/user/individual/pending/:id',
     validateAccessToken,
     validateManager,
     requestWrapper(ManagerService.approvePendingIndividual),
@@ -30,14 +30,14 @@ router.get(
 );
 
 router.post(
-    '/user/organization/pending',
+    '/user/organization/pending/:id',
     validateAccessToken,
     validateManager,
     requestWrapper(ManagerService.approvePendingOrganization),
 );
 
 router.delete(
-    '/user',
+    '/user/:id',
     validateAccessToken,
     validateManager,
     requestWrapper(ManagerService.deleteUser),
@@ -51,14 +51,14 @@ router.get(
 );
 
 router.post(
-    '/ivent/pending',
+    '/ivent/pending/:id',
     validateAccessToken,
     validateManager,
     requestWrapper(ManagerService.approvePendingIvent),
 );
 
 router.delete(
-    '/ivent',
+    '/ivent/:id',
     validateAccessToken,
     validateManager,
     requestWrapper(ManagerService.deleteIvent),

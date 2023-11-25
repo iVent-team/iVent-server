@@ -25,10 +25,10 @@ export async function approvePendingIndividual(
     _res: Response,
     _next: Function,
 ) {
-    const { id, name, phone, gender, college, major, academicStatus } =
-        req.body;
+    const { id } = req.params;
+    const { name, phone, gender, college, major, academicStatus } = req.body;
 
-    if (!id || isNaN(id)) {
+    if (!id || isNaN(Number(id))) {
         throw new BadRequestException('id');
     }
     if (!name || 'string' !== typeof name || 64 < name.length) {
@@ -102,9 +102,9 @@ export async function approvePendingOrganization(
     _res: Response,
     _next: Function,
 ) {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!id || isNaN(id)) {
+    if (!id || isNaN(Number(id))) {
         throw new BadRequestException('id');
     }
 
@@ -133,9 +133,9 @@ export async function deleteUser(
     _res: Response,
     _next: Function,
 ) {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!id || isNaN(id)) {
+    if (!id || isNaN(Number(id))) {
         throw new BadRequestException('id');
     }
 
@@ -179,9 +179,9 @@ export async function approvePendingIvent(
     _res: Response,
     _next: Function,
 ) {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!id || isNaN(id)) {
+    if (!id || isNaN(Number(id))) {
         throw new BadRequestException('id');
     }
 
@@ -214,9 +214,9 @@ export async function deleteIvent(
     _res: Response,
     _next: Function,
 ) {
-    const { id } = req.body;
+    const { id } = req.params;
 
-    if (!id || isNaN(id)) {
+    if (!id || isNaN(Number(id))) {
         throw new BadRequestException('id');
     }
 

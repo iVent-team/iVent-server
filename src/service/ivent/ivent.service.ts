@@ -103,7 +103,7 @@ export async function joinIvent(req: Request, _res: Response, _next: Function) {
 
     const ivent = await iventRepository.findOneById(Number(id));
 
-    if (!ivent || ivent.hostId === req.custom.user.id) {
+    if (!ivent || ivent.hostId === req.custom.user.id || !ivent.isReviewed) {
         throw new NotFoundException('cannot find ivent');
     }
 
