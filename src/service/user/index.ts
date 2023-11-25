@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/sign', requestWrapper(UserService.signUp));
 
-router.post('/sign', requestWrapper(UserService.signIn));
+router.put('/sign', requestWrapper(UserService.signIn));
 
 router.get('/sign', requestWrapper(UserService.refresh));
 
