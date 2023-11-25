@@ -252,6 +252,7 @@ export default class UserEntity {
             isIndividual: this.isIndividual,
             isOfficial: this.isOfficial,
             isManager: this.isManager,
+            createdAt: this.createdAt,
         };
     }
 }
