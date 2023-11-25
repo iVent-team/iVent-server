@@ -131,7 +131,8 @@ const iventAttendanceRepository = database.source
             transactionManager?: EntityManager,
         ) {
             if (transactionManager)
-                return await transactionManager.findBy<IventAttendanceEntity>(
+                // eslint-disable-next-line max-len
+                return await transactionManager.findOneBy<IventAttendanceEntity>(
                     IventAttendanceEntity,
                     {
                         iventId,
@@ -141,7 +142,7 @@ const iventAttendanceRepository = database.source
             else
                 return await database.source
                     .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
-                    .findBy({
+                    .findOneBy({
                         iventId,
                         attendeeId,
                     });
