@@ -17,7 +17,7 @@ const validateAccessToken = async (
             accessToken,
         );
         if (id instanceof Error) {
-            return res.status(401).custom.jsonSend({
+            return res.status(401).custom.send({
                 status: 'fail',
                 message: '접근 권한이 없습니다',
             });
@@ -25,14 +25,14 @@ const validateAccessToken = async (
 
         const user = await userRepository.findOneById(id);
         if (!user) {
-            return res.status(401).custom.jsonSend({
+            return res.status(401).custom.send({
                 status: 'fail',
                 message: '접근 권한이 없습니다',
             });
         }
         req.custom.user = user;
     } catch (e) {
-        return res.status(500).custom.jsonSend({
+        return res.status(500).custom.send({
             status: 'fail',
             message: '알 수 없는 오류가 발생하였습니다',
         });
@@ -47,13 +47,13 @@ const validateIndividual = async (
 ) => {
     try {
         if (!req.custom.user.isIndividual) {
-            return res.status(401).custom.jsonSend({
+            return res.status(401).custom.send({
                 status: 'fail',
                 message: '접근 권한이 없습니다',
             });
         }
     } catch (e) {
-        return res.status(500).custom.jsonSend({
+        return res.status(500).custom.send({
             status: 'fail',
             message: '알 수 없는 오류가 발생하였습니다',
         });
@@ -64,13 +64,13 @@ const validateIndividual = async (
 const validateManager = async (req: Request, res: Response, next: Function) => {
     try {
         if (!req.custom.user.isManager) {
-            return res.status(401).custom.jsonSend({
+            return res.status(401).custom.send({
                 status: 'fail',
                 message: '접근 권한이 없습니다',
             });
         }
     } catch (e) {
-        return res.status(500).custom.jsonSend({
+        return res.status(500).custom.send({
             status: 'fail',
             message: '알 수 없는 오류가 발생하였습니다',
         });

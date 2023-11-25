@@ -10,11 +10,11 @@ const initTransactionMiddleware = async (
         logger: new TransactionLogger(logger, 'HTTP'),
     };
     res.custom = {
-        jsonSend: (c: {}) => {
+        send: (s: number, c: {}) => {
             if (!res.destroyed && undefined === res.custom.responseJson) {
                 try {
                     res.custom.responseJson = c;
-                    return res.json(c).send();
+                    return res.status(s).json(c).send();
                 } catch (e) {
                     req.custom.logger.log(
                         req.custom.logger.levelEnum.WARN,
