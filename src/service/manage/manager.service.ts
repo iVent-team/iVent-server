@@ -73,7 +73,7 @@ export async function approvePendingIndividual(
     if (pendingUser.phone) {
         await Aligo.sendMessage(
             pendingUser.phone,
-            `[iVent]\n${pendingUser.name}님의 계정 검토가 완료되었습니다` +
+            `-iVent-\n${pendingUser.name}님의 계정 검토가 완료되었습니다` +
                 `\n\n${pendingUser.name}'s account review has been completed`,
         );
     }
@@ -120,7 +120,7 @@ export async function approvePendingOrganization(
     if (pendingUser.phone) {
         await Aligo.sendMessage(
             pendingUser.phone,
-            `[iVent]\n${pendingUser.name}님의 계정 검토가 완료되었습니다` +
+            `-iVent-\n${pendingUser.name}님의 계정 검토가 완료되었습니다` +
                 `\n\n${pendingUser.name}'s account review has been completed`,
         );
     }
@@ -148,7 +148,7 @@ export async function deleteUser(
     if (user.phone) {
         await Aligo.sendMessage(
             user.phone,
-            '[iVent]\n계정이 관리자에 의해 삭제되었습니다' +
+            '-iVent-\n계정이 관리자에 의해 삭제되었습니다' +
                 '\n\nAccount has been removed by manager',
         );
     }
@@ -199,7 +199,7 @@ export async function approvePendingIvent(
     if (host && host.phone) {
         await Aligo.sendMessage(
             host.phone,
-            '[iVent]\n' +
+            '-iVent-\n' +
                 `${host.name}님이 등록하신 ${pendingIvent.title}의 등록 검토가 완료되었습니다` +
                 // eslint-disable-next-line max-len
                 `\n\nReview for ${pendingIvent.title} by ${host.name} has been completed`,
@@ -232,7 +232,7 @@ export async function deleteIvent(
         await Aligo.sendMessage(
             host.phone,
             // eslint-disable-next-line max-len
-            `[iVent]\n${host.name}님이 등록하신 ${ivent.title}이(가) 관리자에 의해 삭제되었습니다` +
+            `-iVent-\n${host.name}님이 등록하신 ${ivent.title}이(가) 관리자에 의해 삭제되었습니다` +
                 // eslint-disable-next-line max-len
                 `\n\n${ivent.title} by ${host.name} has been removed by manager`,
         );

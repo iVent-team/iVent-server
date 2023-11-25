@@ -126,7 +126,7 @@ export async function joinIvent(req: Request, _res: Response, _next: Function) {
 
     await Aligo.sendMessage(
         req.custom.user.phone,
-        `[iVent]\n${req.custom.user.name}님의 ${ivent.title} 참가 신청이 완료되었습니다` +
+        `-iVent-\n${req.custom.user.name}님의 ${ivent.title} 참가 신청이 완료되었습니다` +
             // eslint-disable-next-line max-len
             `\n\n${req.custom.user.name}'s join request for ${ivent.title} has been received`,
     );
@@ -187,7 +187,7 @@ export async function approvePendingAttendees(
 
     await Aligo.sendMessage(
         attendeeUser.phone,
-        '[iVent]\n' +
+        '-iVent-\n' +
             `${attendeeUser.name}님이 요청하신 ${ivent.title}의 참가 검토가 완료되었습니다` +
             // eslint-disable-next-line max-len
             `\n\nReview for join ${ivent.title} by ${attendeeUser.name} has been completed`,
@@ -245,7 +245,7 @@ export async function deleteAttendance(
 
     await Aligo.sendMessage(
         attendeeUser.phone,
-        '[iVent]\n' +
+        '-iVent-\n' +
             `${attendeeUser.name}님이 요청하신 ${ivent.title}의 참가 신청이 삭제되었습니다` +
             // eslint-disable-next-line max-len
             `\n\nJoin request for ${ivent.title} by ${attendeeUser.name} has been removed`,
