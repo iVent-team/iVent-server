@@ -98,6 +98,32 @@ export async function getIventDetail(
     };
 }
 
+export async function joinList(req: Request, _res: Response, _next: Function) {
+    const { limit, offset, isFinished } = req.query;
+
+    if (!limit || isNaN(Number(limit)) || 9 < Number(limit)) {
+        throw new BadRequestException('limit');
+    }
+    if (!offset || isNaN(Number(offset)) || Number(offset) < 0) {
+        throw new BadRequestException('offset');
+    }
+    if ('boolean' !== typeof isFinished) {
+        throw new BadRequestException('isFinished');
+    }
+
+    const iventAttendances = await iventAttendanceRepository.getList(
+        Number(limit),
+        Number(offset),
+        isFinished,
+    );
+
+    return await Promise.all(
+        iventAttendances.map(iventAttendance => {
+            return iventAttendance.getJsonResponse();
+        }),
+    );
+}
+
 export async function joinIvent(req: Request, _res: Response, _next: Function) {
     const { id } = req.params;
 

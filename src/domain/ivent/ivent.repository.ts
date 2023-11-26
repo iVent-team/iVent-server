@@ -1,4 +1,4 @@
-import { EntityManager } from 'typeorm';
+import { EntityManager, LessThan, MoreThan } from 'typeorm';
 import database from '../../infra/connector/database';
 import IventEntity, { IventAttendanceEntity } from './ivent.entity';
 
@@ -125,6 +125,20 @@ const iventAttendanceRepository = database.source
                         iventId,
                         isReviewed: true,
                     });
+        },
+        async getList(limit: number, offset: number, isFinished: boolean) {
+            return await database.source
+                .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
+                .createQueryBuilder()
+                .where({
+                    startAt: isFinished
+                        ? LessThan(new Date())
+                        : MoreThan(new Date()),
+                })
+                .limit(limit)
+                .offset(offset)
+                .orderBy('startAt', isFinished ? 'DESC' : 'ASC')
+                .getMany();
         },
         async findOneByIventIdAndAttendeeId(
             iventId: number,

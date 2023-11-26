@@ -138,7 +138,7 @@ export default class IventEntity {
             recruitmentTill: Number(this.recruitmentTill),
             startAt: Number(this.startAt),
             isReviewed: this.isReviewed,
-            createdAt: this.createdAt,
+            createdAt: Number(this.createdAt),
         };
     }
 }
@@ -232,7 +232,7 @@ export class IventAttendanceEntity {
             attendeeId: this.attendeeId,
             isReviewed: this.isReviewed,
             isRated: this.isRated,
-            createdAt: this.createdAt,
+            createdAt: Number(this.createdAt),
         };
     }
 }

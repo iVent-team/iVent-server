@@ -30,6 +30,14 @@ router.get(
     requestWrapper(IventService.getIventDetail),
 );
 
+router.get(
+    '/join',
+    validateAccessToken,
+    validateIndividual,
+    validateActivated,
+    requestWrapper(IventService.joinIvent),
+);
+
 router.post(
     '/join/:id',
     validateAccessToken,
