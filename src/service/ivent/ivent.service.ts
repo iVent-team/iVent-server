@@ -346,6 +346,9 @@ export async function rateIventAttendance(
         throw new NotFoundException('cannot find ivent');
     }
 
+    iventAttendance.isRated = true;
+    await iventAttendanceRepository.save(iventAttendance);
+
     const host = await userRepository.findOneById(ivent.hostId);
     if (!host) {
         throw new NotFoundException('cannot find host');

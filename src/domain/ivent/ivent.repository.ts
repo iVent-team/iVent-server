@@ -1,6 +1,7 @@
 import { EntityManager, LessThan, MoreThan } from 'typeorm';
 import database from '../../infra/connector/database';
 import IventEntity, { IventAttendanceEntity } from './ivent.entity';
+import moment = require('moment');
 
 const iventRepository = database.source.getRepository(IventEntity).extend({
     async add(user: IventEntity, transactionManager?: EntityManager) {
@@ -65,6 +66,23 @@ const iventRepository = database.source.getRepository(IventEntity).extend({
                 .getRepository<IventEntity>(IventEntity)
                 .findBy({ hostId });
     },
+    async findFutureByHostId(
+        hostId: number,
+        transactionManager?: EntityManager,
+    ) {
+        if (transactionManager)
+            return await transactionManager.findBy<IventEntity>(IventEntity, {
+                startAt: MoreThan(moment()),
+                hostId,
+            });
+        else
+            return await database.source
+                .getRepository<IventEntity>(IventEntity)
+                .findBy({
+                    startAt: MoreThan(moment()),
+                    hostId,
+                });
+    },
     async softDeleteById(id: number, transactionManager?: EntityManager) {
         if (transactionManager)
             return await transactionManager.softDelete<IventEntity>(
@@ -95,6 +113,24 @@ const iventAttendanceRepository = database.source
                 return await database.source
                     .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
                     .save(user);
+        },
+        async findByIventId(
+            iventId: number,
+            transactionManager?: EntityManager,
+        ) {
+            if (transactionManager)
+                return await transactionManager.findBy<IventAttendanceEntity>(
+                    IventAttendanceEntity,
+                    {
+                        iventId,
+                    },
+                );
+            else
+                return await database.source
+                    .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
+                    .findBy({
+                        iventId,
+                    });
         },
         async findPendingByIventId(
             iventId: number,
@@ -171,6 +207,40 @@ const iventAttendanceRepository = database.source
                         iventId,
                         attendeeId,
                     });
+        },
+        async softDeleteByIventId(
+            iventId: number,
+            transactionManager?: EntityManager,
+        ) {
+            if (transactionManager)
+                // eslint-disable-next-line max-len
+                return await transactionManager.softDelete<IventAttendanceEntity>(
+                    IventAttendanceEntity,
+                    {
+                        iventId,
+                    },
+                );
+            else
+                return await database.source
+                    .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
+                    .softDelete({ iventId });
+        },
+        async softDeleteByAttendeeId(
+            attendeeId: number,
+            transactionManager?: EntityManager,
+        ) {
+            if (transactionManager)
+                // eslint-disable-next-line max-len
+                return await transactionManager.softDelete<IventAttendanceEntity>(
+                    IventAttendanceEntity,
+                    {
+                        attendeeId,
+                    },
+                );
+            else
+                return await database.source
+                    .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
+                    .softDelete({ attendeeId });
         },
         async findByAttendeeId(
             attendeeId: number,

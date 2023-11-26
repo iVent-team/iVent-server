@@ -1,5 +1,9 @@
 import { Request, Response } from '../../infra/middleware/express';
-import { iventRepository, userRepository } from '../../domain';
+import {
+    iventAttendanceRepository,
+    iventRepository,
+    userRepository,
+} from '../../domain';
 import { BadRequestException } from '../../infra/middleware/handler/exception';
 import { GENDER_ENUM } from '../../domain/user/user.entity';
 import Aligo from '../../infra/module/aligo';
@@ -153,6 +157,34 @@ export async function deleteUser(
         );
     }
 
+    await iventAttendanceRepository.softDeleteByAttendeeId(user.id);
+
+    const ivents = await iventRepository.findFutureByHostId(user.id);
+
+    await Promise.all(
+        ivents.map(async ivent => {
+            await Promise.all(
+                (await iventAttendanceRepository.findByIventId(ivent.id)).map(
+                    async iventAttendance => {
+                        const attendeeUser = await userRepository.findOneById(
+                            iventAttendance.attendeeId,
+                        );
+
+                        await Aligo.sendMessage(
+                            attendeeUser.phone,
+                            '-iVent-\n' +
+                                // eslint-disable-next-line max-len
+                                `${attendeeUser.name}님이 요청하신 ${ivent.title}의 참가 신청이 삭제되었습니다` +
+                                // eslint-disable-next-line max-len
+                                `\n\nJoin request for ${ivent.title} by ${attendeeUser.name} has been removed`,
+                        );
+                    },
+                ),
+            );
+            await iventAttendanceRepository.softDeleteByIventId(ivent.id);
+        }),
+    );
+
     await userRepository.deleteById(user.id);
 
     return;
@@ -237,6 +269,26 @@ export async function deleteIvent(
                 `\n\n${ivent.title} by ${host.name} has been removed by manager`,
         );
     }
+
+    await Promise.all(
+        (await iventAttendanceRepository.findByIventId(ivent.id)).map(
+            async iventAttendance => {
+                const attendeeUser = await userRepository.findOneById(
+                    iventAttendance.attendeeId,
+                );
+
+                await Aligo.sendMessage(
+                    attendeeUser.phone,
+                    '-iVent-\n' +
+                        // eslint-disable-next-line max-len
+                        `${attendeeUser.name}님이 요청하신 ${ivent.title}의 참가 신청이 삭제되었습니다` +
+                        // eslint-disable-next-line max-len
+                        `\n\nJoin request for ${ivent.title} by ${attendeeUser.name} has been removed`,
+                );
+            },
+        ),
+    );
+    await iventAttendanceRepository.softDeleteByIventId(ivent.id);
 
     await iventRepository.softDeleteById(ivent.id);
 
