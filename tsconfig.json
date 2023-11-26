@@ -1,0 +1,32 @@
+{
+    "include": ["./src/**/*.ts"],
+    "exclude": [""],
+    "compilerOptions": {
+        "target": "es5",
+        "moduleResolution": "node",
+        "lib": ["dom", "es2015"],
+        "module": "commonjs",
+        "outDir": "./dist",
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "downlevelIteration": true,
+        "paths": {
+            "@controller/*": ["./src/controller/*"],
+            "@domain/*": ["./src/domain/*"],
+            "@infra/*": ["./src/infra/*"],
+            "@view/*": ["./src/view/*"],
+            "@root/*": ["./src/*"]
+        },
+        "types": [
+            "node"
+        ]
+    },
+    "tsd": {
+        "testFiles": ["types/**/*.test-d.ts"]
+    }
+}

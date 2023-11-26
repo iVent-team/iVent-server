@@ -1,0 +1,56 @@
+version: '3.1'
+networks:
+    ivent-network:
+        driver: bridge
+services:
+    ivent-service:
+        networks:
+            - ivent-network
+        build: "./"
+        container_name: "ivent-service"
+        working_dir: "/app"
+        environment:
+            TZ: ""
+            SERVER_NAME: ""
+            HTTP_PORT: "3000"
+            DB_HOST: "ivent-postgres"
+            DB_PORT: "5432"
+            DB_USER: "postgres"
+            DB_PASS: ""
+            DB_NAME: ""
+            REDIS_HOST: "ivent-redis"
+            REDIS_PORT: "6379"
+            PASSWORD_ITERATION: ""
+            JWT_KEY_TTL: ""
+            JWT_ISSUER: ""
+            ACCESS_TTL: ""
+            REFRESH_TTL: ""
+            ALIGO_KEY: ""
+            ALIGO_ID: ""
+            ALIGO_SENDER: ""
+            IS_PROD: ""
+        ports:
+            - "3000:3000"
+        volumes:
+            - ../data/images:/app/images
+        links:
+            - "ivent-redis"
+            - "ivent-postgres"
+    ivent-redis:
+        networks:
+            - ivent-network
+        image: "redis:3"
+        ports:
+            - "63790:6379"
+        container_name: "ivent-redis"
+    ivent-postgres:
+        networks:
+            - ivent-network
+        image: "postgres:15-alpine"
+        ports:
+            - "54320:5432"
+        container_name: "ivent-postgres"
+        volumes:
+            - ../data/db:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: ""
