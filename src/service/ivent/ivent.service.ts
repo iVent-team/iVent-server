@@ -107,14 +107,11 @@ export async function joinList(req: Request, _res: Response, _next: Function) {
     if (!offset || isNaN(Number(offset)) || Number(offset) < 0) {
         throw new BadRequestException('offset');
     }
-    if ('boolean' !== typeof isFinished) {
-        throw new BadRequestException('isFinished');
-    }
 
     const iventAttendances = await iventAttendanceRepository.getList(
         Number(limit),
         Number(offset),
-        isFinished,
+        'true' === isFinished,
     );
 
     return await Promise.all(

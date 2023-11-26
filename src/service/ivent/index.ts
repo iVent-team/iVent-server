@@ -35,7 +35,7 @@ router.get(
     validateAccessToken,
     validateIndividual,
     validateActivated,
-    requestWrapper(IventService.joinIvent),
+    requestWrapper(IventService.joinList),
 );
 
 router.post(
