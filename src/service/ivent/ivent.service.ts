@@ -57,7 +57,7 @@ export async function getIventList(
     _res: Response,
     _next: Function,
 ) {
-    const { limit, offset } = req.query;
+    const { limit, offset, myIventOnly } = req.query;
 
     if (!limit || isNaN(Number(limit)) || 9 < Number(limit)) {
         throw new BadRequestException('limit');
@@ -66,10 +66,19 @@ export async function getIventList(
         throw new BadRequestException('offset');
     }
 
-    const iventList = await iventRepository.getList(
-        Number(limit),
-        Number(offset),
-    );
+    let iventList;
+    if ('true' === myIventOnly) {
+        iventList = await iventRepository.getListByHostId(
+            Number(limit),
+            Number(offset),
+            req.custom.user.id,
+        );
+    } else {
+        iventList = await iventRepository.getList(
+            Number(limit),
+            Number(offset),
+        );
+    }
 
     return {
         ivent: await Promise.all(

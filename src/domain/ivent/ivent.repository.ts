@@ -11,6 +11,16 @@ const iventRepository = database.source.getRepository(IventEntity).extend({
                 .getRepository<IventEntity>(IventEntity)
                 .save(user);
     },
+    async getListByHostId(limit: number, offset: number, hostId: number) {
+        return await database.source
+            .getRepository<IventEntity>(IventEntity)
+            .createQueryBuilder()
+            .where({ hostId })
+            .limit(limit)
+            .offset(offset)
+            .orderBy('startAt', 'ASC')
+            .getMany();
+    },
     async getList(limit: number, offset: number) {
         return await database.source
             .getRepository<IventEntity>(IventEntity)
