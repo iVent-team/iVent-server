@@ -17,6 +17,7 @@ const iventRepository = database.source.getRepository(IventEntity).extend({
             .createQueryBuilder()
             .limit(limit)
             .offset(offset)
+            .orderBy('startAt', 'ASC')
             .getMany();
     },
     async findOneById(id: number, transactionManager?: EntityManager) {
