@@ -26,6 +26,9 @@ const iventRepository = database.source.getRepository(IventEntity).extend({
         return await database.source
             .getRepository<IventEntity>(IventEntity)
             .createQueryBuilder()
+            .where({
+                isReviewed: true,
+            })
             .limit(limit)
             .offset(offset)
             .orderBy('start_at', 'ASC')
