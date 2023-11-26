@@ -185,6 +185,26 @@ export default class UserEntity {
     })
     public isManager: boolean;
 
+    @Column({
+        type: 'integer',
+        name: 'positive_score',
+        default: 1,
+        nullable: false,
+        unique: false,
+        comment: 'positive score of user',
+    })
+    public positiveScore: number;
+
+    @Column({
+        type: 'boolean',
+        name: 'negative_score',
+        default: 1,
+        nullable: false,
+        unique: false,
+        comment: 'negative score of user',
+    })
+    public negativeScore: number;
+
     @CreateDateColumn({
         type: 'timestamp',
         name: 'created_at',
@@ -252,6 +272,14 @@ export default class UserEntity {
             isIndividual: this.isIndividual,
             isOfficial: this.isOfficial,
             isManager: this.isManager,
+            color: Math.min(
+                9,
+                Math.floor(
+                    (this.positiveScore /
+                        (this.positiveScore + this.negativeScore)) *
+                        9,
+                ) + 1,
+            ),
             createdAt: Number(this.createdAt),
         };
     }

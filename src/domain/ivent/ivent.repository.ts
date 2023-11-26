@@ -188,6 +188,26 @@ const iventAttendanceRepository = database.source
                     .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
                     .findBy({ attendeeId });
         },
+        async findNotRatedByAttendeeId(
+            iventId: number,
+            transactionManager?: EntityManager,
+        ) {
+            if (transactionManager)
+                return await transactionManager.findBy<IventAttendanceEntity>(
+                    IventAttendanceEntity,
+                    {
+                        iventId,
+                        isReviewed: true,
+                    },
+                );
+            else
+                return await database.source
+                    .getRepository<IventAttendanceEntity>(IventAttendanceEntity)
+                    .findBy({
+                        iventId,
+                        isReviewed: true,
+                    });
+        },
         async softDeleteById(id: number, transactionManager?: EntityManager) {
             if (transactionManager)
                 // eslint-disable-next-line max-len

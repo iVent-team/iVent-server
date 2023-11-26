@@ -287,3 +287,77 @@ export async function deleteAttendance(
 
     return;
 }
+
+export async function getRateList(
+    req: Request,
+    _res: Response,
+    _next: Function,
+) {
+    const iventAttendances =
+        await iventAttendanceRepository.findNotRatedByAttendeeId(
+            req.custom.user.id,
+        );
+
+    return await Promise.all(
+        iventAttendances.filter(async iventAttendance => {
+            const ivent = await iventRepository.findOneById(
+                iventAttendance.iventId,
+            );
+
+            return !(
+                !ivent ||
+                (0 < moment().diff(ivent.startAt) &&
+                    moment().diff(ivent.startAt) < 7 * 24 * 60 * 60 * 1000)
+            );
+        }),
+    );
+}
+
+export async function rateIventAttendance(
+    req: Request,
+    _res: Response,
+    _next: Function,
+) {
+    const { id } = req.params;
+    const { score } = req.body;
+
+    if ('number' !== typeof score || score < -3 || 3 < score) {
+        throw new BadRequestException('score');
+    }
+
+    const iventAttendance = await iventAttendanceRepository.findOneById(
+        Number(id),
+    );
+
+    if (
+        !iventAttendance ||
+        iventAttendance.attendeeId === req.custom.user.id ||
+        iventAttendance.isRated
+    ) {
+        throw new NotFoundException('cannot find iventAttendance');
+    }
+
+    const ivent = await iventRepository.findOneById(iventAttendance.iventId);
+    if (
+        !ivent ||
+        (0 < moment().diff(ivent.startAt) &&
+            moment().diff(ivent.startAt) < 7 * 24 * 60 * 60 * 1000)
+    ) {
+        throw new NotFoundException('cannot find ivent');
+    }
+
+    const host = await userRepository.findOneById(ivent.hostId);
+    if (!host) {
+        throw new NotFoundException('cannot find host');
+    }
+
+    if (score < 0) {
+        host.negativeScore -= score;
+    } else {
+        host.positiveScore += score;
+    }
+
+    await userRepository.save(host);
+
+    return;
+}

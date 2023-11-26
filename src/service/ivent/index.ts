@@ -81,4 +81,20 @@ router.delete(
     requestWrapper(IventService.deleteAttendance),
 );
 
+router.get(
+    '/rate',
+    validateAccessToken,
+    validateIndividual,
+    validateActivated,
+    requestWrapper(IventService.getRateList),
+);
+
+router.post(
+    '/rate/:id',
+    validateAccessToken,
+    validateIndividual,
+    validateActivated,
+    requestWrapper(IventService.rateIventAttendance),
+);
+
 export default router;
